@@ -1,5 +1,4 @@
-# SmithyPDA
-Your Personal Digital Assistant.
+![](https://github.com/dwnsdp/Smithy-PDA/blob/main/SmithyLogo.png?raw=true)
 
 Smithy is a personal assistant, like Alexa, Google Assistant, or Siri but connecting to mostly FOSS services.
 Smithy uses OpenAI tools to connect to any plugin you see fit. Though it comes with most plugins you will need out of the box.
