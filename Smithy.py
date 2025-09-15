@@ -80,7 +80,7 @@ def ascii():
                 r_line += " " * len(letter[0])
         print(l_line + " " + r_line)
 
-
+version = "2.4"
 
 try:
     socket.create_connection(("8.8.8.8", 53), timeout=5)
@@ -149,7 +149,7 @@ load_addons()
 print("Loaded addons")
 
 ascii()
-
+print(f"Chatting with Smithy v{version}")
 def llm(prompt, identity):
     if not os.path.exists(f"{config_path}/{identity}.md"):
         with open(f"{config_path}/{identity}.md", "w") as f:
