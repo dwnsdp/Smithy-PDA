@@ -3,6 +3,13 @@
 Smithy is a personal assistant, like Alexa, Google Assistant, or Siri but connecting to mostly FOSS services.
 Smithy uses OpenAI tools to connect to any plugin you see fit. Though it comes with most plugins you will need out of the box.
 
+How it works:
+User asks a query
+Smithy responds with JSON which contains a message, maybe an action, and a flag called continue
+It sends the message to the User
+It runs the action
+If continue is true it feeds the output of the action back into smithy, else it gives the output to the user
+
 Here are the addons I hope to create
 - **Notes** - you configure a location containing .MD, or .TXT files.
 	- Search: returns the whole note that the snippet was found in
