@@ -96,6 +96,7 @@ config_path = 'config'
 print(f"Config path: {config_path}/main.env")
 load_dotenv(f'{config_path}/main.env')
 plugin_dir = os.getenv("PLUGINS")
+confirm = os.getenv("CONFIRM")
 
 # tell the user the plugin dir, unless it is none, then scare them
 if(plugin_dir) == None:
@@ -108,7 +109,6 @@ NAME = os.getenv("NAME")
 print(f"Got user name: {NAME}")
 # set up conversation messages
 conversation_messages = []
-state = ""
 
 # load openAI client
 print("Loading OpenAI client.")
@@ -119,7 +119,7 @@ if not OPENAI_KEY:
 client = openai.OpenAI(api_key=OPENAI_KEY)
 MODEL_NAME = os.getenv("MODEL")
 if MODEL_NAME == None:
-    MODEL_NAME = "gpt-4o"
+    MODEL_NAME = "gpt-4.1"
 
 
 addons = []
@@ -186,24 +186,22 @@ def llm(prompt):
     return response.choices[0].message.content
 
 def run_action(action):
-    output = ""
-    cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    output = result.stdout.strip()
-    print(output)
-    return output
-
-def confirm():
-    output = run_action(smithy_action)
-    conversation_messages.append({"role": "assistant", "content": f"Action output: {output}"})
-
-def deny():
-    smithy_message = "Action cancelled on users request"
-    smithy_continue = "False"
+    print(f"Confirmation = {confirm}")
+    if confirm == "True":
+        print("Smithy is attempting to run an action:")
+        print(action)
+        confirmation = input("Allow action Y/n? ")
+        if confirmation == "n" or "no":
+            return "Action cancelled on user's request"
+        else:
+            output = ""
+            cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            output = result.stdout.strip()
+            print(output)
+            return output
 
 def smithy(user_input):
-    global state
-    state = "Smithy"
     while True:
         # ask smithy
         smithy = llm(user_input)
@@ -228,18 +226,13 @@ def smithy(user_input):
 
         # run action
         if smithy_action != {}:
-            smithy_message = smithy_action
-            global request
-            request = True
+            run_action(smithy_action)
 
         if smithy_continue != "True":
             break
 
 def main(user_input):
-    global state
-    state = "user"
     conversation_messages.append({"role": "user", "content": user_input})
-
     smithy(user_input)
 
 if __name__ == "__main__":
