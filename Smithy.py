@@ -80,7 +80,7 @@ def ascii():
                 r_line += " " * len(letter[0])
         print(l_line + " " + r_line)
 
-ascii()
+
 
 try:
     socket.create_connection(("8.8.8.8", 53), timeout=5)
@@ -147,6 +147,8 @@ def load_addons():
 
 load_addons()
 print("Loaded addons")
+
+ascii()
 
 def llm(prompt, identity):
     if not os.path.exists(f"{config_path}/{identity}.md"):
