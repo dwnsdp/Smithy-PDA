@@ -147,24 +147,25 @@ def load_addons():
 
 load_addons()
 print("Loaded addons")
+print(addons)
 
 ascii()
 print(f"Chatting with Smithy v{version}")
-def llm(prompt, identity):
-    if not os.path.exists(f"{config_path}/{identity}.md"):
-        with open(f"{config_path}/{identity}.md", "w") as f:
+def llm(prompt):
+    if not os.path.exists(f"{config_path}/sys_prompt.md"):
+        with open(f"{config_path}/sys_prompt.md", "w") as f:
             pass
-        print(f"created {identity}.md at {config_path}")
+        print(f"created sys_prompt.md at {config_path}")
 
-    with open(f"{config_path}/{identity}.md") as f:
+    with open(f"{config_path}/sys_prompt.md") as f:
         content = f.read()
         content = content.format(actions=addons, time=time, user=NAME)
 
     messages = {}
 
-    messages[identity] = [
+    messages["smithy"] = [
         {
-            "role": "system",
+            "role": "assistant",
             "content": content
         }
     ]
@@ -172,12 +173,12 @@ def llm(prompt, identity):
     if len(conversation_messages) > 0:
         recent_messages = conversation_messages[-10:]
         for msg in recent_messages:
-            messages[identity].append(msg)
+            messages["smithy"].append(msg)
 
-    messages[identity].append({"role": "user", "content": prompt})
+    messages["smithy"].append({"role": "user", "content": prompt})
     response = client.chat.completions.create(
         model=MODEL_NAME,
-        messages=messages[identity],
+        messages=messages["smithy"],
         temperature=0.7,
         max_tokens=400,
         stream=False,
@@ -189,6 +190,7 @@ def run_action(action):
     cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
     result = subprocess.run(cmd, capture_output=True, text=True)
     output = result.stdout.strip()
+    print(output)
     return output
 
 def confirm():
@@ -204,7 +206,7 @@ def smithy(user_input):
     state = "Smithy"
     while True:
         # ask smithy
-        smithy = llm(user_input, "smithy")
+        smithy = llm(user_input)
         # log to conversation messages
         conversation_messages.append({"role": "assistant", "content": smithy})
         # load json
