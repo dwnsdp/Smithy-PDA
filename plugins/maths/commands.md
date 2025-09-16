@@ -9,7 +9,7 @@ Available actions:
 
 To use this plugin, your action should be formatted as follows:
 
-    "Action": "Maths",
+    "action": "maths",
     "operation": "addition",
     "a": 5,
     "b": 3
