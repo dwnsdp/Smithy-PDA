@@ -2,15 +2,24 @@ import os
 from dotenv import load_dotenv
 import openai
 import subprocess
-import os
-import glob
 from pathlib import Path
 import sys
 import json
 from datetime import datetime
 import socket
+import colorama
+
+
+red = "\033[91m"
+green = "\033[92m"
+blue = "\033[94m"
+magenta = "\033[95m"
+
+reset = "\033[0m"
+
 
 def ascii():
+    print("\n")
     left = [
         " .oooooo..o                    o8o      .   oooo                     ",
         "d8P'    `Y8                    `\"'    .o8   `888                     ",
@@ -58,10 +67,6 @@ def ascii():
     right = [P, D, A]
 
     # ANSI codes for right letters
-    red = "\033[91m"
-    green = "\033[92m"
-    blue = "\033[94m"
-    reset = "\033[0m"
 
     # pad left and right to same number of lines
     max_lines = max(len(left), max(len(r) for r in right))
@@ -96,7 +101,6 @@ config_path = 'config'
 print(f"Config path: {config_path}/main.env")
 load_dotenv(f'{config_path}/main.env')
 plugin_dir = os.getenv("PLUGINS")
-confirm = os.getenv("CONFIRM")
 
 # tell the user the plugin dir, unless it is none, then scare them
 if(plugin_dir) == None:
@@ -186,20 +190,19 @@ def llm(prompt):
     return response.choices[0].message.content
 
 def run_action(action):
-    print(f"Confirmation = {confirm}")
-    if confirm == "True":
-        print("Smithy is attempting to run an action:")
-        print(action)
-        confirmation = input("Allow action Y/n? ")
-        if confirmation == "n" or "no":
-            return "Action cancelled on user's request"
-        else:
-            output = ""
-            cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            output = result.stdout.strip()
-            print(output)
-            return output
+    print(magenta)
+    print("Smithy is attempting to run an action:")
+    print(action)
+    confirmation = input("Allow action Y/n? ")
+    if confirmation == "n":
+        print(f"Action cancelled on user's request{reset}")
+        conversation_messages.append({"role": "user", "content": "Cancel action"})
+        conversation_messages.append({"role": "system", "content": "Action cancelled"})
+    else:
+        cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result.stdout.strip()+reset)
+        conversation_messages.append({"role": "system", "content": result.stdout.strip()})
 
 def smithy(user_input):
     while True:
@@ -211,16 +214,17 @@ def smithy(user_input):
         try:
             smithy = json.loads(smithy)
         except Exception as e:
-            print("Did smithy output invalid json?")
+            print(f"{red}Did smithy output invalid json?")
             print(e)
             print(smithy)
+            print(reset)
             return
 
         global smithy_message
         global smithy_action
         # extract values to individual variables
         smithy_message = smithy["Message"]
-        print(smithy_message)
+        print(f"{blue}Smithy: {smithy_message}{reset}")
         smithy_action = smithy["Action"]
         smithy_continue = smithy["Continue"]
 
@@ -237,5 +241,5 @@ def main(user_input):
 
 if __name__ == "__main__":
     while True:
-        user_input = input("You: ")
+        user_input = input(f"{green}{NAME}: {reset}")
         main(user_input)
