@@ -199,10 +199,12 @@ def run_action(action):
         conversation_messages.append({"role": "user", "content": "Cancel action"})
         conversation_messages.append({"role": "system", "content": "Action cancelled"})
     else:
-        cmd = ["python", f"Plugins/{action["Action"]}/{action["Action"]}.py", str(action)]
+        cmd = ["python", f"plugins/{action['action']}/{action['action']}.py", json.dumps(action)]
+        print(f"Running command:{cmd}")
         result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result)
         print(result.stdout.strip()+reset)
-        conversation_messages.append({"role": "system", "content": result.stdout.strip()})
+        conversation_messages.append({"role": "system", "content": result})
 
 def smithy(user_input):
     while True:
@@ -226,13 +228,11 @@ def smithy(user_input):
         smithy_message = smithy["Message"]
         print(f"{blue}Smithy: {smithy_message}{reset}")
         smithy_action = smithy["Action"]
-        smithy_continue = smithy["Continue"]
 
         # run action
         if smithy_action != {}:
             run_action(smithy_action)
-
-        if smithy_continue != "True":
+        else:
             break
 
 def main(user_input):
