@@ -196,9 +196,9 @@ def run_action(action):
         cmd = ["python", f"plugins/{action['action']}/{action['action']}.py", json.dumps(action)]
         print(f"Running command:{cmd}")
         result = subprocess.run(cmd, capture_output=True, text=True)
-        print(result)
         print(result.stdout.strip()+reset)
-        conversation_messages.append({"role": "system", "content": result})
+        conversation_messages.append({"role": "system", "content": result.stdout.strip()})
+
 
 def smithy(user_input):
     while True:
