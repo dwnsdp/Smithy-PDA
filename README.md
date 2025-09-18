@@ -15,15 +15,15 @@ Here are the addons I hope to create
 - [ ]  **Notes** - you configure a location containing .MD, or .TXT files.
 	- Search: returns the whole note that the snippet was found in
 	- Edit: Uses the LLM to find the note you means, then uses the LLM to return it, but with the edit made.
-- [ ]  **Tasks** - Integrates with CalDAV
+- [ ]  **Tasks** - Integrates with CalDAV or Google Tasks
 	- Add: Uses the LLM to work out which of your lists you mean, unless there is only one
 	- Complete: Uses the LLM to work out what task you need to tick off
 	- Edit: Uses the LLM to work out what task you mean, then replaces
-- [ ]  **Calendar** - Integrates with CalDAV
+- [ ]  **Calendar** - Integrates with CalDAV or Google Calendar
 	- Add: Takes Title, start time, end time, all day, etc...
 	- Remove: Uses the LLM to work out what event you mean
 	- Edit: Uses the LLM to work out what event you mean, then replaces
-- [ ]  **Remind** - Integrates with CalDAV - makes a new calendar of it's own called Reminders and then is basically just calendar events
+- [ ]  **Remind** - Integrates with CalDAV or Google Calendar - makes a new calendar of it's own called Reminders and then is basically just calendar events
 	- Add
 	- Remove
 	- Edit
