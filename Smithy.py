@@ -87,13 +87,6 @@ def ascii():
 
 version = "2.4"
 
-# try:
-#     socket.create_connection(("8.8.8.8", 53), timeout=100)
-# except OSError:
-#     print(OSError)
-#     print("Your offline, exiting program.")
-#     sys.exit()
-
 time = datetime.today().strftime('%Y%m%d%H%M%S')
 
 # set config path, plugin dir and load .env
